@@ -1,0 +1,42 @@
+[project]
+name = "speechmarine"
+version = "0.0.0dev"
+requires-python = ">=3.8, <3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "numpy >= 1.16.6",
+    "llvmlite == 0.40.1",
+    "librosa >= 0.10",
+    "sounddevice >= 0.4.6",
+    "soundfile >= 0.12",
+    "coloredlogs",
+]
+
+[project.optional-dependencies]
+# [tool.pdm.dev-dependencies]  # will either need --dev or --prod usage
+linters = [
+    "black == 23.3.0",
+]
+tests = [
+    "pytest >= 7.2.0, <= 7.3.0",
+]
+build = [
+    "wheel >= 0.36.0",
+]
+
+[tool.pdm.scripts]
+demo = "python main.py --input ./sample.wav --preset dreadnought --times 1"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+plugins = [
+    "-e file:///${PROJECT_ROOT}/pdm-custom-plugins/"
+]
