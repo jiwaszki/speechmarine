@@ -15,8 +15,9 @@ downloads/
 eggs/
 .eggs/
 lib/
+*.lprof
 # Allow lib from the project
-!/speechmarine/lib/
+!/src/speechmarine/lib/
 lib64/
 parts/
 sdist/
