@@ -15,7 +15,7 @@ Make sure you have Python 3.9 or later installed. You can install the required d
 pip install --upgrade pip
 pip install pdm
 pdm install --plugins
-pdm custom-install --python env --no-lock
+pdm custom-install --python env --no-lock  # add -vv flag if you want to see detailed logs
 # Run demo to verify installation
 pdm run demo
 ```
