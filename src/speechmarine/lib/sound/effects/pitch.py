@@ -1,4 +1,4 @@
-import librosa
+from librosa.effects import pitch_shift  # import directly, saves significant amount of time on import
 
 from speechmarine.lib.sound.effects.effect import Effect
 from speechmarine.lib.sound.effects.settings import Settings
@@ -33,8 +33,9 @@ class Pitch(Effect[PitchSettings]):
     def __init__(self, semitones, cents) -> None:
         self._settings = PitchSettings(semitones, cents)
 
+    # @profile
     def apply(self, audio_data, sampling_rate):
         _steps = self.settings.semitones + self.settings.cents * 0.01
-        return librosa.effects.pitch_shift(
+        return pitch_shift(
             audio_data, sr=sampling_rate, n_steps=_steps, res_type="soxr_vhq"
         )

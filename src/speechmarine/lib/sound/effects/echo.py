@@ -42,7 +42,7 @@ class Echo(Effect[EchoSettings]):
     def __init__(self, delay, feedback, attenuation) -> None:
         self._settings = EchoSettings(delay, feedback, attenuation)
 
-    # TODO: how to ommit sampling_rate here as it is unused?
+    # TODO: ommit sampling_rate here as it is unused
     def apply(self, audio_data, sampling_rate=None):
         # TODO: add equalization from the beinging of the tutorial
         echo_filter = np.zeros(self.settings.delay + 1)

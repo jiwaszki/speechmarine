@@ -1,8 +1,9 @@
 import numpy as np
-import librosa
+from librosa import db_to_amplitude
 
 from speechmarine.lib.sound.effects.effect import Effect
 from speechmarine.lib.sound.effects.settings import Settings
+from speechmarine._speechmarine_impl import gain_reduction_loop
 
 
 class CompressorSettings(Settings):
@@ -62,7 +63,7 @@ class Compressor(Effect[CompressorSettings]):
 
     def apply(self, audio_data, sampling_rate):
         # Convert threshold from dB to linear
-        threshold = librosa.db_to_amplitude(self.settings.threshold)
+        threshold = db_to_amplitude(self.settings.threshold)
         # Calculate the envelope of the audio data
         envelope = np.abs(audio_data)
         # Smooth the envelope using an attack-release filter
@@ -70,23 +71,20 @@ class Compressor(Effect[CompressorSettings]):
         release_time = self.settings.release / 1000  # Convert release time to seconds
         alpha_attack = np.exp(-1 / (sampling_rate * attack_time))
         alpha_release = np.exp(-1 / (sampling_rate * release_time))
-        smoothed_envelope = np.zeros_like(envelope)
+
         gain_reduction = np.zeros_like(envelope)
-        for i in range(1, len(envelope)):
-            if envelope[i] > smoothed_envelope[i - 1]:
-                coeff = alpha_attack
-            else:
-                coeff = alpha_release
-            smoothed_envelope[i] = (
-                coeff * smoothed_envelope[i - 1] + (1 - coeff) * envelope[i]
-            )
-            # Calculate gain reduction
-            if smoothed_envelope[i] > threshold:
-                gain_reduction[i] = 1 - (1 - 1 / self.settings.ratio) * (
-                    smoothed_envelope[i] - threshold
-                ) / (smoothed_envelope[i] - threshold / self.settings.ratio)
-            else:
-                gain_reduction[i] = 1
+        smoothed_envelope = np.zeros_like(envelope)
+
+        gain_reduction = gain_reduction_loop(
+            gain_reduction,
+            envelope,
+            smoothed_envelope,
+            self.settings.ratio,
+            threshold,
+            alpha_attack,
+            alpha_release,
+        )
+
         # Apply gain reduction to the audio data
         compressed_audio_data = audio_data * gain_reduction
-        return compressed_audio_data * librosa.db_to_amplitude(self.settings.gain)
+        return compressed_audio_data * db_to_amplitude(self.settings.gain)

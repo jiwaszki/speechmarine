@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.signal import fftconvolve
 
 from speechmarine.lib.sound.effects.effect import Effect
 from speechmarine.lib.sound.effects.settings import Settings
@@ -40,10 +41,16 @@ class Reverb(Effect[ReverbSettings]):
 
     def __init__(self, dry, wet, wide) -> None:
         self._settings = ReverbSettings(dry, wet, wide)
+        self._impulse_response = None
 
     def apply(self, audio_data, sampling_rate):
         # Convolve the audio data with the impulse response
-        convolved_audio = np.convolve(
+        # # Not efficient:
+        # # convolved_audio = np.convolve(
+        # #     audio_data, self._synthesize_impulse_response(sampling_rate)
+        # # )
+        # # Refer to notes: https://numpy.org/doc/stable/reference/generated/numpy.convolve.html
+        convolved_audio = fftconvolve(
             audio_data, self._synthesize_impulse_response(sampling_rate)
         )
         # Normalize the convolved audio

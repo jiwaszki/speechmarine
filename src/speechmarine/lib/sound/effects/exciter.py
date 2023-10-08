@@ -1,5 +1,5 @@
 import numpy as np
-import librosa
+from librosa import db_to_amplitude
 from scipy.signal import butter, filtfilt
 
 from speechmarine.lib.sound.effects.effect import Effect
@@ -54,7 +54,7 @@ class Exciter(Effect[ExciterSettings]):
         harmonics /= np.max(np.abs(harmonics))
         # Mix the harmonics back with the original audio data
         excited_audio = (
-            audio_data + librosa.db_to_amplitude(self.settings.gain) * harmonics
+            audio_data + db_to_amplitude(self.settings.gain) * harmonics
         )
         # Normalize the output audio
         excited_audio /= np.max(np.abs(excited_audio))

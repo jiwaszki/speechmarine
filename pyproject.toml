@@ -1,17 +1,21 @@
 [project]
 name = "speechmarine"
 version = "0.0.0dev"
-requires-python = ">=3.8, <3.11"
+description = "TBA"  # TODO
+readme = "README.md"
+requires-python = ">=3.9, <3.11"
+authors = [
+    { name = "Jan Iwaszkiewicz", email = "jiwaszkiewicz6@gmail.com" },
+]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
 ]
 dependencies = [
-    "numpy >= 1.16.6",
+    "numpy >= 1.24.4",
     "llvmlite == 0.40.1",
-    "librosa >= 0.10",
+    "librosa @ git+https://github.com/jiwaszki/librosa.git@jiwaszki/improve_module_loading",
     "sounddevice >= 0.4.6",
     "soundfile >= 0.12",
     "coloredlogs",
@@ -26,17 +30,55 @@ tests = [
     "pytest >= 7.2.0, <= 7.3.0",
 ]
 build = [
+    "nanobind >= 1.5.2",
     "wheel >= 0.36.0",
 ]
+# voice-gen = [
+#     "soundfile",
+#     "numpy",
+#     "torch",
+#     "torchvision",
+#     "torchaudio",
+#     "tokenizers",
+#     "encodec",
+#     "langid",
+#     "wget",
+#     "unidecode",
+#     "pyopenjtalk-prebuilt",
+#     "pypinyin",
+#     "inflect",
+#     "cn2an",
+#     "jieba",
+#     "eng_to_ipa",
+#     "openai-whisper",
+#     "phonemizer==3.2.0",
+#     "matplotlib",
+#     "gradio",
+#     "nltk",
+#     "sudachipy",
+#     "sudachidict_core",
+#     "vocos",
+# ]
 
 [tool.pdm.scripts]
+# Run demo
 demo = "python main.py --input ./sample.wav --preset dreadnought --times 1"
-
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+# Build cpp extension to speed-up Python bootlenecks
+cpp_ext = ""
 
 [tool.pdm]
 plugins = [
     "-e file:///${PROJECT_ROOT}/pdm-custom-plugins/"
 ]
+
+[build-system]
+requires = ["scikit-build-core >= 0.4.3", "nanobind >= 1.5.2"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+# Protect the configuration against future changes in scikit-build-core
+minimum-version = "0.4"
+# Setuptools-style build caching in a local directory
+build-dir = "build/{wheel_tag}"
+# Build stable ABI wheels for CPython 3.12+
+wheel.py-api = "cp312"
