@@ -9,22 +9,18 @@ Big thanks to [DreadAnon](https://www.youtube.com/@DreadAnon/about) who describe
 
 ## Installation
 
-Make sure you have Python 3.8 or later installed. You can install the required dependencies using [PDM](https://pdm.fming.dev/). When inside the project directory, simply run the following commands:
+Make sure you have Python 3.9 or later installed. You can install the required dependencies using [PDM](https://pdm.fming.dev/). When inside the project directory, simply run the following commands:
 
 ```bash
 pip install --upgrade pip
 pip install pdm
-pdm install --no-self --no-lock
+pdm install --plugins
+pdm custom-install --python env --no-lock
 # Run demo to verify installation
 pdm run demo
 ```
 
-Alternatively, if you prefer not to use dependency managers, you can use the `requirements.txt` file (which was exported by `PDM`:):
-```bash
-pip install -r requirements.txt
-```
-
-However, the strongly recommended approach is to use a custom installation plugin (located in the `pdm-custom-plugins` directory). This plugin allows you to specify Python versions using the `--python` flag. Since `PDM`` tries to resolve all dependencies across a wide range of versions, it can be beneficial to use the most recent ones for your specific Python version. For example, you can use the most recent version of numpy to benefit from the latest optimizations.
+The strongly recommended approach is to use a custom installation plugin (located in the `pdm-custom-plugins` directory). This plugin allows you to specify Python versions using the `--python` flag. Since `PDM`` tries to resolve all dependencies across a wide range of versions, it can be beneficial to use the most recent ones for your specific Python version. For example, you can use the most recent version of numpy to benefit from the latest optimizations.
 
 The plugin is built on top of the `pdm install` command, so all other flags work exactly the same way.
 
