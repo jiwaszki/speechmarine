@@ -53,9 +53,7 @@ class Exciter(Effect[ExciterSettings]):
         # Normalize harmonics
         harmonics /= np.max(np.abs(harmonics))
         # Mix the harmonics back with the original audio data
-        excited_audio = (
-            audio_data + db_to_amplitude(self.settings.gain) * harmonics
-        )
+        excited_audio = audio_data + db_to_amplitude(self.settings.gain) * harmonics
         # Normalize the output audio
         excited_audio /= np.max(np.abs(excited_audio))
         return excited_audio

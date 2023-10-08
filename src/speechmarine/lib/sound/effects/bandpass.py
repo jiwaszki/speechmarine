@@ -89,11 +89,20 @@ class Bandpass(Effect[BandpassSettings]):
         #     )  # apply gain
         # # Pararrel version, scipy.signal.sosfilt is nogil.
         # # ref: https://github.com/scipy/scipy/blob/166e1f2b1ea0a1a2c3d7b030bd829549f8a5844a/scipy/signal/_sosfilt.pyx#L19-L31
-        with concurrent.futures.ThreadPoolExecutor(max_workers=self.settings.num_bands) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=self.settings.num_bands
+        ) as executor:
             future_to_index = {
                 executor.submit(
-                    _filter_band, self.settings.order, audio_data, self.settings.bands[index], _bands[index], _bands[index + 1], sampling_rate
-                ): index for index in range(self.settings.num_bands)
+                    _filter_band,
+                    self.settings.order,
+                    audio_data,
+                    self.settings.bands[index],
+                    _bands[index],
+                    _bands[index + 1],
+                    sampling_rate,
+                ): index
+                for index in range(self.settings.num_bands)
             }
             for future in concurrent.futures.as_completed(future_to_index):
                 filtered_band = None
@@ -101,7 +110,9 @@ class Bandpass(Effect[BandpassSettings]):
                     filtered_band = future.result()
                 except Exception as exc:
                     # TODO: replace with a proper error raise
-                    print(f"Filter on band #{future_to_index[future]} generated an exception: {exc}")
+                    print(
+                        f"Filter on band #{future_to_index[future]} generated an exception: {exc}"
+                    )
                 filtered_audio += filtered_band
 
         return filtered_audio * db_to_amplitude(

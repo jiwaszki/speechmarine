@@ -1,4 +1,6 @@
-from librosa.effects import pitch_shift  # import directly, saves significant amount of time on import
+from librosa.effects import (
+    pitch_shift,
+)  # import directly, saves significant amount of time on import
 
 from speechmarine.lib.sound.effects.effect import Effect
 from speechmarine.lib.sound.effects.settings import Settings

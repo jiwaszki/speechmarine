@@ -18,7 +18,7 @@ def load_audio(
     file_path: str,
     offset: float = 0.0,
     duration: float = None,
-    dtype = np.float32,
+    dtype=np.float32,
 ):
     """
     Load audio from a file and return the audio data and sampling rate.
@@ -133,7 +133,9 @@ def main():
 
     # Load audio
     audio_data, sampling_rate = load_audio(args.input)
-    logging.info(f"Audio duration: {librosa.get_duration(y=audio_data, sr=sampling_rate)}")
+    logging.info(
+        f"Audio duration: {librosa.get_duration(y=audio_data, sr=sampling_rate)}"
+    )
 
     # Check and possibly resample audio
     audio_data, sampling_rate = check_and_resample(audio_data, sampling_rate)
